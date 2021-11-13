@@ -1,29 +1,38 @@
 import React, {useState} from 'react';
 import {useQuery} from 'react-query';
 import Planet from './Planet';
+import {get} from 'lodash';
 
-
-const fetchPlanets = async (key, greetings, page) => {
-    // console.log(props)
-    console.log(greetings)
-
-    const res = await fetch(`https://swapi.dev/api/planets`)
+const fetchPlanets = async (page = 1) => {
+    const res = await fetch(`https://swapi.dev/api/planets/?page=${page}`)
     return res.json()
 }
 
 const Planets = () => {
-    const [page, setPage] = useState(1)
-    const {data, status} = useQuery(['planets', 'hello ninjas', page], fetchPlanets);
+    const [page, setPage] = useState(1);
+    const {
+        isLoading,
+        isError,
+        error,
+        data,
+        isFetching,
+        isPreviousData
+    } = useQuery(['planets', page], () => fetchPlanets(page), {staleTime: 30000});
 
     return (
         <div>
             <h2>Planets</h2>
-            <button onClick={() => setPage(1)}>Page 1</button>
-            <button onClick={() => setPage(2)}>Page 2</button>
-            <button onClick={() => setPage(3)}>Page 3</button>
-            {status === 'loading' && <div> Loading ...</div>}
-            {status === 'error' && <div> Error on loading</div>}
-            {/*{status === 'success' && data.results.map((planet, key) => <Planet key={key} planet={planet}/>)}*/}
+            <button onClick={() => setPage(old => Math.max(old - 1, 1))}>Previous Page</button>
+            <button>{page}</button>
+            <button onClick={() => {
+                if (!isPreviousData && data?.next)
+                    setPage(old => old + 1)
+            }}>Next Pages
+            </button>
+            {isFetching ? <span> Loading...</span> : null}{' '}
+            {isLoading ? <div> Loading ...</div> : isError ?
+                <div> {error}</div> : data.results.map((planet, key) => <Planet key={key} planet={planet}/>)}
+
         </div>
     );
 }
