@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {useQuery} from 'react-query';
 import Planet from './Planet';
-import {get} from 'lodash';
 
 const fetchPlanets = async (page = 1) => {
     const res = await fetch(`https://swapi.dev/api/planets/?page=${page}`)
