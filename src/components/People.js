@@ -18,10 +18,10 @@ const People = () => {
         status,
     } = useInfiniteQuery('people', fetchPeople, {
         getNextPageParam: (lastPages, pages) => lastPages.next[lastPages.next.length - 1],
-        select: data => ({
-            pages: [...data.pages].reverse(),
-            pageParams: [...data.pageParams].reverse(),
-        })
+        // select: data => ({
+        //     pages: [...data.pages].reverse(),
+        //     pageParams: [...data.pageParams].reverse(),
+        // })
     });
 
 
