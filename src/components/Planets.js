@@ -16,7 +16,7 @@ const Planets = () => {
         data,
         isFetching,
         isPreviousData
-    } = useQuery(['planets', page], () => fetchPlanets(page), {staleTime: 30000});
+    } = useQuery(['planets', page], () => fetchPlanets(page), {keepPreviousData: true, staleTime: 30000});
 
     return (
         <div>
